@@ -1,0 +1,138 @@
+set hlsearch
+set incsearch
+set nocompatible     
+let mapleader = ","
+
+" be iMproved, required
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'maksimr/vim-jsbeautify'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'scrooloose/syntastic' "for EsLint 
+Plugin 'millermedeiros/vim-esformatter' "for EsFormatter
+Plugin 'Chiel92/vim-autoformat'
+Plugin 'tpope/vim-surround'
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" Run C++
+map <F9> :w <CR> :!clear && c++ % -std=c++11<CR>
+map <F10> :w <CR> :!clear && c++ % -o %< -std=c++11 && ./%< <CR>
+
+" Enable Rai Mai Ru
+filetype on
+filetype plugin indent on
+" Enable Clipboard
+set clipboard=unnamed
+
+" Disable Scrath Preview
+set completeopt-=preview
+" Enable Syntax on
+syntax on
+
+" Enable Line Number
+set number
+
+" Hilight Current Line
+set cursorline
+
+" Show status and line number
+set laststatus=2
+set statusline=%f "tail of the filename
+set statusline+=:%l
+
+" Set Matchmaker
+let g:matchmaker_enable_startup = 1
+
+" SET Tab
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set expandtab
+
+" ignore case sensitive
+set ignorecase
+
+" General
+set background=dark
+set mouse=a
+scriptencoding utf-8
+set backspace=indent,eol,start
+let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
+
+" NERD Tree Auto
+map <C-n> :NERDTreeToggle<CR>
+
+" Paste without Clear buffer
+vnoremap <leader>p "_dP
+
+" Close Cursors
+"inoremap  <Up>     <NOP>
+"inoremap  <Down>   <NOP>
+"inoremap  <Left>   <NOP>
+"inoremap  <Right>  <NOP>
+"noremap   <Up>     <NOP>
+"noremap   <Down>   <NOP>
+"noremap   <Left>   <NOP>
+"noremap   <Right>  <NOP>
+"
+"map <up> <nop>
+"map <down> <nop>
+"map <left> <nop>
+"map <right> <nop>
+"
+"imap <up> <nop>
+"imap <down> <nop>
+"imap <left> <nop>
+"imap <right> <nop>
+
+" ESLint Format
+let g:syntastic_error_symbol = '❌'
+let g:syntastic_style_error_symbol = '⁉️'
+let g:syntastic_warning_symbol = '⚠️'
+let g:syntastic_style_warning_symbol = '💩'
+
+" OBBA
+vmap <Leader>h :<C-U>!hg blame -fnu <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+vmap <Leader>g :<C-U>!git blame -fnu <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+
+"" Vim Auto Format
+let g:formatterpath = ['/usr/local/Cellar/llvm/4.0.0/bin','/usr/local/Cellar/astyle/2.06']
+let g:formatdef_my_cpp = '"clang-format -style=google"'
+let g:formatters_cpp = ['my_cpp']
+let g:formatter_yapf_style = 'pep8'
+let g:ycm_global_ycm_extra_conf = "~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
+let g:ycm_python_binary_path = '/usr/local/bin/python3.5'
+noremap <F3> :Autoformat<CR>
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0
+
+" Syntastic
+let g:syntastic_check_on_wq = 1 " check when write file if mode active
+"let g:syntastic_mode_map = { "mode": "passive" }
+let g:syntastic_javascript_checkers = ['eslint']
+map <C-l> :SyntasticCheck<cr>
+map <f2> :SyntasticReset<cr>
+
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
+nnoremap <C-w>E :SyntasticCheck<CR> :SyntasticToggleMode<CR>
+let g:syntastic_disabled_filetypes=['c']
+let g:syntastic_disabled_filetypes=['cpp']
+let g:syntastic_disabled_filetypes=['py']
+let g:ycm_show_diagnostics_ui = 0
+autocmd FileType javascript noremap <buffer>  <c-f> :Esformatter<cr>
+autocmd FileType c noremap <buffer>  <c-f> :Autoformat<cr>
+autocmd FileType cpp noremap <buffer>  <c-f> :Autoformat<cr>
+autocmd FileType json noremap <buffer>  <c-f> :Autoformat<cr>
+autocmd FileType python noremap <buffer>  <c-f> :Autoformat<cr>
+autocmd FileType py noremap <buffer>  <c-f> :Autoformat<cr>
+autocmd FileType html noremap <buffer>  <c-f> :Autoformat<cr>
+
+" Python JEDI
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#auto_initialization = 0
