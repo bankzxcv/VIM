@@ -8,9 +8,11 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
+Plugin 'jiangmiao/auto-pairs'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'ternjs/tern_for_vim'
 Plugin 'fatih/vim-go'
+Plugin 'ctrlp.vim'
 Plugin 'maksimr/vim-jsbeautify'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Valloric/YouCompleteMe'
@@ -92,8 +94,8 @@ let g:formatdef_my_cpp = '"clang-format -style=google"'
 let g:formatters_cpp = ['my_cpp']
 let g:formatter_yapf_style = 'google'
 let g:ycm_global_ycm_extra_conf = "~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
-let g:ycm_python_binary_path = '/usr/local/bin/python2'
-let g:ycm_server_python_interpreter = '/usr/local/bin/python2'
+let g:ycm_python_binary_path = '/usr/local/bin/python3'
+let g:ycm_server_python_interpreter = '/usr/local/bin/python3'
 let g:ycm_auto_trigger = 1
 let g:ycm_show_diagnostics_ui = 0
 let g:ycm_goto_buffer_command = 'new-tab'
@@ -142,10 +144,10 @@ let g:go_fmt_command = "goimports"
 
 " Auto Close Bracket
 
-ino " ""<left>
-ino ' ''<left>
-ino ( ()<left>
-ino [ []<left>
-ino { {}<left>
-ino {<CR> {<CR>}<ESC>O
-ino {;<CR> {<CR>};<ESC>O
+"ino " ""<left>
+"ino ' ''<left>
+"ino ( ()<left>
+"ino [ []<left>
+"ino { {}<left>
+"ino {<CR> {<CR>}<ESC>O
+"ino {;<CR> {<CR>};<ESC>O
