@@ -3,32 +3,76 @@ set incsearch
 set nocompatible     
 let mapleader = ","
 
-" be iMproved, required
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'davidhalter/jedi-vim'
-Plugin 'ternjs/tern_for_vim'
-Plugin 'fatih/vim-go'
-Plugin 'ctrlp.vim'
-Plugin 'maksimr/vim-jsbeautify'
-Plugin 'scrooloose/nerdtree'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/syntastic' "for EsLint 
-Plugin 'millermedeiros/vim-esformatter' "for EsFormatter
-Plugin 'Chiel92/vim-autoformat'
-Plugin 'tpope/vim-surround'
-call vundle#end()            " required
-
-" Run C++
-map <F9> :w <CR> :!clear && c++ % -std=c++11<CR>
-map <F10> :w <CR> :!clear && c++ % -o %< -std=c++11 && ./%< <CR>
-
 " No swp, no backup
 set nobackup
 set noswapfile
+
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" Here to Plugin
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+filetype plugin on
+
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+" Type Script
+Plug 'leafgarland/typescript-vim'
+" Indent JSX in Javascript file
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+
+Plug 'ervandew/supertab'
+Plug 'SirVer/ultisnips'
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'junegunn/vim-easy-align'
+
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
+
+" GOCODE
+Plug 'mdempsky/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' }
+
+" Install Auto Format
+Plug 'w0rp/ale'
+
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+" Auto Format
+Plug 'Chiel92/vim-autoformat'
+
+" Auto Pair
+Plug 'jiangmiao/auto-pairs'
+
+" Using a non-master branch
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+Plug 'fatih/vim-go', { 'tag': '*' , 'do': ':GoUpdateBinaries' }
+
+" Plugin outside ~/.vim/plugged with post-update hook
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+" Unmanaged plugin (manually installed and updated)
+Plug '~/my-prototype-plugin'
+" Initialize plugin system
+call plug#end()
 
 " Enable Rai Mai Ru
 filetype on
@@ -37,12 +81,6 @@ filetype plugin indent on
 " set clipboard=unnamed
 " Copy to clipboard
 vnoremap <silent> <leader>y :<CR>:let @a=@" \| execute "normal! vgvy" \| let res=system("pbcopy", @") \| let @"=@a<CR>
-
-" Plugin Fuzzy Search
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'ra'
 
 " Disable Scrath Preview
 set completeopt-=preview
@@ -75,8 +113,6 @@ set expandtab
 " ignore case sensitive
 set ignorecase
 
-" " General
-set background=dark
 set mouse=a
 scriptencoding utf-8
 set backspace=indent,eol,start
@@ -84,51 +120,62 @@ set backspace=indent,eol,start
 " NERD TREE
 map <C-e> :NERDTreeToggle<CR>
 
+" YCM
+let g:ycm_auto_trigger = 1
+let g:ycm_show_diagnostics_ui = 0
+
 " Hg / GIT Blame
 vmap <Leader>h :<C-U>!hg blame -fnu <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 vmap <Leader>g :<C-U>!git blame -fnu <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 
-" Auto Format
+" jsx external required
+let g:jsx_ext_required = 0
+
 let g:formatterpath = ['/usr/local/Cellar/llvm/4.0.0_1/bin','/usr/local/go/bin/']
 let g:formatdef_my_cpp = '"clang-format -style=google"'
 let g:formatters_cpp = ['my_cpp']
 let g:formatter_yapf_style = 'google'
-let g:ycm_global_ycm_extra_conf = "~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
-let g:ycm_python_binary_path = '/usr/local/bin/python3'
-let g:ycm_server_python_interpreter = '/usr/local/bin/python3'
-let g:ycm_auto_trigger = 1
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_goto_buffer_command = 'new-tab'
-map <C-]> :YcmCompleter GoTo<CR>
-" autocmd FileType javascript map <C-]> :YcmCompleter GoTo<CR>
 
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-n>'
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+
+" Prettier Standard
+
+let g:ale_fixers = {'javascript': ['standard']}
+let g:ale_linters = {'javascript': ['']}
+let g:ale_echo_msg_format = '%linter% says %s'
+let g:ale_fix_on_save = 0
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_text_changed='never'
+let g:ale_lint_on_enter = 0
 noremap <F3> :Autoformat<CR>
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 0
 
-" Nerdtree
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" Go Auto Complete Lib
+let g:go_fmt_autosave = 0
+let g:go_fmt_command = "goimports"
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
 
-" Syntastic
-let g:syntastic_check_on_wq = 1 " check when write file if mode active
-"let g:syntastic_mode_map = { "mode": "passive" }
-let g:syntastic_javascript_checkers = ['standard']
-map <C-l> :SyntasticCheck<cr>
-map <f2> :SyntasticReset<cr>
-
-let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes':[],'passive_filetypes': [] }
-nnoremap <C-w>E :SyntasticCheck<CR> :SyntasticToggleMode<CR>
-let g:syntastic_disabled_filetypes=['c']
-let g:syntastic_disabled_filetypes=['cpp']
-let g:syntastic_disabled_filetypes=['py']
-
-" Force indentation styles for this directory
-autocmd FileType python set shiftwidth=2
-autocmd FileType python set tabstop=2
-autocmd FileType python set softtabstop=2
-autocmd FileType javascript noremap <buffer>  <c-f> :Esformatter<cr>
+au FileType go nnoremap <leader>v :vsp <CR>:exe "GoDef" <CR>
+au FileType go nnoremap <leader>s :sp <CR>:exe "GoDef" <CR>
+au FileType go nnoremap <leader>t :tab split <CR>:exe "GoDef" <CR>
+"autocmd FileType javascript noremap <buffer>  <c-f> :ALEFix<cr> <bar> :ALELint<cr>
+autocmd FileType javascript noremap <buffer>  <c-f> :ALEFix<cr>
+autocmd FileType javascript noremap <buffer> <C-k> :ALEPrevious<cr>
+autocmd FileType javascript noremap <buffer> <C-j> :ALENext<cr>
 autocmd FileType c noremap <buffer>  <c-f> :Autoformat<cr>
 autocmd FileType cpp noremap <buffer>  <c-f> :Autoformat<cr>
 autocmd FileType java noremap <buffer>  <c-f> :Autoformat<cr>
@@ -136,18 +183,3 @@ autocmd FileType go noremap <buffer>  <c-f> :GoFmt<cr>
 autocmd FileType json noremap <buffer>  <c-f> :Autoformat<cr>
 autocmd FileType python noremap <buffer>  <c-f> :Autoformat<cr>
 autocmd FileType html noremap <buffer>  <c-f> :Autoformat<cr>
-
-" Go Auto Complete Lib
-let g:go_fmt_autosave = 0
-let g:go_fmt_command = "goimports"
-
-
-" Auto Close Bracket
-
-"ino " ""<left>
-"ino ' ''<left>
-"ino ( ()<left>
-"ino [ []<left>
-"ino { {}<left>
-"ino {<CR> {<CR>}<ESC>O
-"ino {;<CR> {<CR>};<ESC>O
